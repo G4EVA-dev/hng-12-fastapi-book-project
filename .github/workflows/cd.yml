@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: Deploy Application
 
 on:
   push:
@@ -9,17 +9,30 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.9"
+
       - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Deploy application
+
+      - name: Deploy to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
-          # Add deployment steps here (e.g., deploying to a server or cloud platform)
-          echo "Deployment steps go here"
+          echo "$SSH_PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key $SERVER_USER@$SERVER_HOST << 'EOF'
+            cd /path/to/your/app
+            git pull origin main
+            source env/bin/activate
+            pip install -r requirements.txt
+            systemctl restart fastapi
+          EOF
