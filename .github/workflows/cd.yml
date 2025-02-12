@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CD Pipeline
 on:
   push:
     branches: [main]
@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Navigate to project directory
-            cd /home/ubuntu/ || exit
+            cd /home/ubuntu/app || exit
 
             # Pull latest changes
             git pull origin main
