@@ -19,21 +19,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Navigate to project directory
-            cd /home/ubuntu/fastapi-app || exit
+            cd /home/ubuntu/fastapi-app
 
             # Pull latest changes
             git pull origin main
 
             # Set up Python virtual environment
-            python3 -m venv venv
             source venv/bin/activate
 
             # Install dependencies
-            pip install --upgrade pip
             pip install -r requirements.txt
 
             # Restart the FastAPI application
-            sudo systemctl restart fastapi.service
-
-            # Reload Nginx to apply any changes
-            sudo systemctl restart nginx
+            sudo systemctl restart fastapi-book-project
