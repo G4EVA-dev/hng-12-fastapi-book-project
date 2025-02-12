@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Navigate to project directory
-            cd /home/ubuntu/app || exit
+            cd /home/ubuntu/ || exit
 
             # Pull latest changes
             git pull origin main
